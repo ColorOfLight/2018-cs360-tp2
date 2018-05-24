@@ -1,14 +1,15 @@
-# vue-webpack-template
+# Team Cook - CS360 Term Project 2 in KAIST (2018 Spring)
 
-> Customized template for developing web service with Vue.js
+## Design
 
-## Which customs are contained in?
+[Figma](https://www.figma.com/file/bscmYjGBCwb8kkEHwJKVqh3c/2018_DB_Term2)
 
-- Based on vue-cli (webpack, router, no tests)
-- vue-bootstrap & customization file (bootstrap_custom.scss)
-- Pre-processors & template added (Pug & Sass / _template.vue)
-- Global Sass variable & mixin files added
-- Font Setting (SpoqaHanSans is initially set)
+## Main Libraries Used for the project
+
+- Pug/Sass
+- Vue (includes vue-router, vue-loaders, etc)
+- Bootstrap-Vue
+
 
 ## Build Setup
 
