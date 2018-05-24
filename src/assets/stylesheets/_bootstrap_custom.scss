@@ -1,0 +1,19 @@
+// Color
+$primary: #F44336;
+$secondary: #FFC107;
+
+// Media breakpoint
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+$border-radius: 0;
+$border-radius-lg: 0;
+
+
+// Badge border-radius
+$badge-border-radius: .25rem;

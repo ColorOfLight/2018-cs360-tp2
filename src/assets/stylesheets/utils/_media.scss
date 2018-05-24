@@ -1,0 +1,25 @@
+// Variables는 bootstrap_custom에서 정의함
+
+@mixin above-xl {
+  @media (min-width: map-get($grid-breakpoints, 'xl')) {
+    @content;
+  }
+}
+
+@mixin above-lg {
+  @media (min-width: map-get($grid-breakpoints, 'lg')) {
+    @content;
+  }
+}
+
+@mixin above-md {
+  @media (min-width: map-get($grid-breakpoints, 'md')) {
+    @content;
+  }
+}
+
+@mixin above-sm {
+  @media (min-width: map-get($grid-breakpoints, 'sm')) {
+    @content;
+  }
+}
