@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import LoginPage from '@/pages/LoginPage'
+import SearchPage from '@/pages/SearchPage'
 
 Vue.use(Router)
 
@@ -11,6 +12,11 @@ export default new Router({
       path: '/',
       name: 'Login',
       component: LoginPage
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: SearchPage
     }
   ],
 })
