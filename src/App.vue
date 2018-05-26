@@ -12,13 +12,18 @@ export default {
 <style lang="scss">
 @import "./assets/stylesheets/common.scss";
 
+html {
+  height: 100%;
+}
+
 body {
   background-color: $bg-color;
   font-family: "Spoqa Han Sans", Helvetica, Arial, sans-serif;
-  min-height: 100%;
+  height: 100%;
 }
 
 #app {
+  height: 100%;
   position: relative;
 }
 </style>
