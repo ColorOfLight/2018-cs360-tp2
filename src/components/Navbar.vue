@@ -6,23 +6,25 @@
         b-form-input.search-input(type="text")
         i.material-icons.search-icon search
       .navbar-account-container
-        .navbar-account
+        .navbar-account(@click="() => isDropdownOpen = !isDropdownOpen")
           | Seongho Park
           i.material-icons arrow_drop_down
-          
+        .navbar-dropdown-content(v-if="isDropdownOpen")
+          b-card
+            .dropdown-list Logout
 </template>
 
 <script>
 export default {
-
+  data () {
+    return {
+      isDropdownOpen: false,
+    }
+  },
 }
 </script>
 
 <style scoped lang="scss">
-$navbar-height: 4.5rem;
-$navbar-title-width: 12rem;
-$navbar-account-width: 15rem;
-
 .navbar {
   background-color: $white;
   border: 1px solid $border-color;
@@ -99,6 +101,24 @@ $navbar-account-width: 15rem;
     color: $gray-500;
     margin-left: .75rem;
     vertical-align: sub;
+  }
+
+  .navbar-dropdown-content {
+    .card-body {
+      padding: .5rem 0;
+      text-align: left;
+    }
+
+    .dropdown-list {
+      line-height: 1.2;
+      padding: .75rem 0 .75rem 2rem;
+
+      &:hover {
+        background-color: $primary-50;
+        color: $primary;
+        cursor: pointer;
+      }
+    }
   }
 }
 </style>
