@@ -9,3 +9,9 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

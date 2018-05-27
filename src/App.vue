@@ -18,6 +18,7 @@ html {
 
 body {
   background-color: $bg-color;
+  color: $default;
   font-family: "Spoqa Han Sans", Helvetica, Arial, sans-serif;
   height: 100%;
 }
