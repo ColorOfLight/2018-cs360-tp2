@@ -15,3 +15,35 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+@mixin place-holder-color($color) {
+  .form-control::-webkit-input-placeholder {
+    color: $color;
+  }
+
+  /* WebKit, Blink, Edge */
+
+  .form-control:-moz-placeholder {
+    color: $color;
+  }
+
+  /* Mozilla Firefox 4 to 18 */
+
+  .form-control::-moz-placeholder {
+    color: $color;
+  }
+
+  /* Mozilla Firefox 19+ */
+
+  .form-control:-ms-input-placeholder {
+    color: $color;
+  }
+
+  /* Internet Explorer 10-11 */
+
+  .form-control::-ms-input-placeholder {
+    color: $color;
+  }
+
+  /* Microsoft Edge */
+}
