@@ -1,9 +1,9 @@
 <template lang="pug">
   .page-search
-    navbar.navbar
+    navbar.navbar(:username="username")
     .search-content-container
       .side-menu-wrapper
-        .account-name Seongho Park
+        .account-name {{username}}
         b-card.side-menu-card
           .card-text
             i.material-icons.icon-favorite star
@@ -66,12 +66,12 @@
 <script>
 import Cookies from 'js-cookie'
 import Navbar from '@/components/Navbar'
-import store from '@/store/index'
 
 export default {
   async created () {
     if (Cookies.get('user_id')) {
-      store.dispatch('getUser', Cookies.get('user_id'));
+      await this.$store.dispatch('getUser', Cookies.get('user_id'));
+      this.username = this.$store.state.username;
     } else {
       this.$router.push({name: 'Login'});
     }
@@ -79,9 +79,11 @@ export default {
   components: {
     navbar: Navbar,
   },
-  data: {
-
-  }
+  data () {
+    return {
+      username: "",
+    }
+  },
 }
 </script>
 
