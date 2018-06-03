@@ -14,6 +14,11 @@ export default new Router({
       component: LoginPage
     },
     {
+      path: '/signup',
+      name: 'SignUp',
+      component: LoginPage
+    },
+    {
       path: '/search',
       name: 'Search',
       component: SearchPage

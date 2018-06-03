@@ -5,25 +5,80 @@
         b-card.login-card
           .card-title TEAM COOK
           b-container.input-container(fluid)
+            b-row(v-if="$route.name === 'SignUp'")
+              b-col.col(sm="3")
+                label Username
+              b-col.col(sm="9")
+                b-form-input(type="text" v-model="form.username")
             b-row
               b-col.col(sm="3")
-                label E-mail
+                label User ID
               b-col.col(sm="9")
-                b-form-input(type="text")
+                b-form-input(type="text" v-model="form.user_id")
             b-row
               b-col.col(sm="3")
                 label Password
               b-col.col(sm="9")
-                b-form-input(type="password")
-          .btn-container
-            b-button.btn-signup(variant="outline-secondary") Sign up
+                b-form-input(type="password" v-model="form.password")
+          .btn-container(v-if="$route.name === 'SignUp'")
+            b-button.btn-login(variant="secondary" @click="signUp") Sign up
+          .btn-container(v-else)
+            b-button.btn-signup(variant="outline-secondary" @click="moveToSignUp") Sign up
             span.interval or
-            b-button.btn-login(variant="secondary") Login
+            b-button.btn-login(variant="secondary" @click="login") Login
 </template>
 
 <script>
-export default {
+import Http from '@/libs/Http'
+import qs from "qs"
+import Cookies from "js-cookie"
 
+export default {
+  data () {
+    return {
+      form: {
+        user_id: "",
+        password: "",
+        username: ""
+      },
+    }
+  },
+  methods: {
+    login () {
+      if (this.form.user_id && this.form.password) {
+        const httpData = {
+          user_id: this.form.user_id,
+          password: this.form.password
+        };
+        Http.post('/user/login', qs.stringify(httpData)).then(((res) => {
+          Cookies.set('user_id', res.data.data.user_id);
+          this.$router.push({name: 'Search'});
+        })).catch((res) => {
+          alert("Please check User ID or Password.")
+        });
+      } else {
+        alert("Please fill all of inputs.")
+      }
+    },
+    signUp () {
+      if (this.form.user_id && this.form.password && this.form.username) {
+        const httpData = {
+          id: this.form.user_id,
+          password: this.form.password,
+          name: this.form.username
+        };
+        Http.post('/user', httpData).then(((res) => {
+          // TODO: return 값으로 user_id
+          console.log(res.data);
+        }))
+      } else {
+        alert("Please fill all of inputs.")
+      }
+    },
+    moveToSignUp () {
+      this.$router.push({name: 'SignUp'});
+    }
+  }
 }
 </script>
 
