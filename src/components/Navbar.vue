@@ -3,24 +3,55 @@
     .navbar-wrapper
       .navbar-title TEAM COOK
       .navbar-search-container
-        b-form-input.search-input(type="text")
+        b-form-input.search-input(type="text" v-model="term" placeholder="Chicken, Pizza, ... or #Delicious, #Large, ...")
         i.material-icons.search-icon search
       .navbar-account-container
         .navbar-account(@click="() => isDropdownOpen = !isDropdownOpen")
-          | Seongho Park
+          | {{username}}
           i.material-icons arrow_drop_down
         .navbar-dropdown-content(v-if="isDropdownOpen")
           b-card
-            .dropdown-list Logout
+            .dropdown-list(@click="logout") Logout
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+
 export default {
+  props: [
+    'username'
+  ],
   data () {
     return {
       isDropdownOpen: false,
+      term: ''
     }
   },
+  methods: {
+    logout () {
+      Cookies.remove('user_id');
+      this.$router.push({name: 'Login'});
+    },
+    search (prevTerm) {
+      if (prevTerm === this.term) {
+        if (!this.term) {
+          this.$router.replace({name: 'Search'});
+        } else if (this.term.indexOf("#") === 0) {
+          this.$router.replace({name: 'Search', query: { tag: this.term.substring(1)}});
+        } else {
+          this.$router.replace({name: 'Search', query: { keyword: this.term}});
+        }
+      }
+    }
+  },
+  watch: {
+    'term': function () {
+      const prevTerm = this.term;
+      setTimeout(() => {
+        this.search(prevTerm);
+      }, 1000)
+    }
+  }
 }
 </script>
 
