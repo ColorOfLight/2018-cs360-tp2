@@ -64,12 +64,24 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
 import Navbar from '@/components/Navbar'
+import store from '@/store/index'
 
 export default {
+  async created () {
+    if (Cookies.get('user_id')) {
+      store.dispatch('getUser', Cookies.get('user_id'));
+    } else {
+      this.$router.push({name: 'Login'});
+    }
+  },
   components: {
     navbar: Navbar,
   },
+  data: {
+
+  }
 }
 </script>
 
