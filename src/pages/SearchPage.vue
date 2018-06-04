@@ -13,7 +13,7 @@
           .col-6(v-if="storeList && storeList.length > 0")
             b-card.search-store-card(no-body v-for="store in storeList" :key="store.store_id" @click="showStoreDetail(store)")
               b-card-body
-                i.material-icons.icon-favorite.active star
+                i.material-icons.icon-favorite(:class="{active: isStoreFavorited(store.store_id)}" @click.stop="toggleFavorite(store.store_id)") star
                 .search-title-container
                   .title {{store.name}}
                   .tag-wrapper
@@ -30,7 +30,7 @@
           .col-6
             b-card.store-detail-card(no-body v-if="storeInDetail")
               b-card-body.detail-title-body
-                i.material-icons.icon-favorite.active star
+                i.material-icons.icon-favorite(:class="{active: isStoreFavorited(storeInDetail.store_id)}" @click.stop="toggleFavorite(store.store_id)") star
                 .title {{storeInDetail.name}}
               b-card-body.detail-content-body
                 b-card(no-body)
@@ -64,7 +64,10 @@ import Navbar from '@/components/Navbar'
 export default {
   async created () {
     if (Cookies.get('user_id')) {
-      let promiseList = [ this.$store.dispatch('getUser', Cookies.get('user_id')) ];
+      let promiseList = [
+        this.$store.dispatch('getUser', Cookies.get('user_id')),
+        this.$store.dispatch('getFavorites', Cookies.get('user_id'))
+      ];
 
       if (this.$route.query.keyword) {
         promiseList.push(
@@ -82,6 +85,7 @@ export default {
       await Promise.all(promiseList);
       this.username = this.$store.state.username;
       this.storeList = this.$store.state.storeList;
+      // this.favorites = this.$store.state.favorites;
     } else {
       this.$router.push({name: 'Login'});
     }
@@ -94,6 +98,7 @@ export default {
       username: "",
       storeList: null,
       storeInDetail: null,
+      favorites: null,
     }
   },
   methods: {
@@ -129,6 +134,21 @@ export default {
     },
     showStoreDetail(sto) {
       this.storeInDetail = sto;
+    },
+    isStoreFavorited(id) {
+      if (!this.favorites || this.favorites.length < 1) return false;
+      for (let i = 0; i < this.favorites.length; i++) {
+        if (this.favorites[i].store_id === id) return true;
+      }
+      return false;
+    },
+    toggleFavorite(id) {
+      const params = {
+        store_id: id,
+        user_id: Cookies.get('user_id'),
+      };
+      if (this.isStoreFavorited(id)) this.$store.dispatch('deleteFavorite', params);
+      else this.$store.dispatch('addFavorite', params);
     }
   },
   watch: {
@@ -152,6 +172,9 @@ export default {
         this.storeList = this.$store.state.storeList;
       },
       deep: true,
+    },
+    '$store.state.favorites': function (val) {
+      this.favorites = val;
     }
   },
 }
@@ -169,8 +192,8 @@ $store-detail-title-height: 4rem;
 .icon-favorite {
   color: $gray-300;
 
-  &.primary {
-    color: $primary;
+  &.active {
+    color: $primary !important;
   }
 
   &:hover {

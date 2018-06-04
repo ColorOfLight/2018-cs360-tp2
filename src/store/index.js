@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Http from '@/libs/Http'
+import qs from 'qs'
 
 Vue.use(Vuex);
 
@@ -48,11 +49,32 @@ const actions = {
     const params = {
       tag
     };
-    await Http.get('/store/list/tag', {params}).then((res) => {
+    await Http.get('/store/list/tag', { params }).then((res) => {
       const storeList = res.data.data;
       commit('setState', {
         storeList
       });
+    });
+  },
+  getFavorites: async function ({ commit, state }, user_id) {
+    const params = {
+      user_id
+    };
+    await Http.get('/user/favorite', { params }).then((res) => {
+      const favorites = res.data.data;
+      commit('setState', {
+        favorites
+      });
+    });
+  },
+  addFavorite: function ({ commit, state, dispatch }, params) {
+    Http.post('/user/favorite', qs.stringify(params)).then((res) => {
+      dispatch('getFavorites', params.user_id);
+    });
+  },
+  deleteFavorite: function ({ commit, state, dispatch }, params) {
+    Http.delete('/user/favorite', {params}).then((res) => {
+      dispatch('getFavorites', params.user_id);
     });
   },
 }
