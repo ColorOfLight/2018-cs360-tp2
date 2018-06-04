@@ -7,7 +7,8 @@ Vue.use(Vuex);
 const state = {
   id: null,
   username: '',
-  favorites: [],
+  favorites: null,
+  storeList: null,
 };
 
 const mutations = {
@@ -19,11 +20,11 @@ const mutations = {
 };
 
 const actions = {
-  getUser ({ commit, state }, user_id) {
+  getUser: async function ({ commit, state }, user_id) {
     const params = {
       user_id
     };
-    Http.get('/user', {params}).then((res) => {
+    await Http.get('/user', {params}).then((res) => {
       const data = res.data.data;
       commit('setState', {
         id: data.user_id,
@@ -31,6 +32,28 @@ const actions = {
         favorites: data.favorite_list,
       })
     })
+  },
+  getStoreListKeyword: async function ({ commit, state }, keyword) {
+    const params = {
+      keyword
+    };
+    await Http.get('/store/list/keyword', {params}).then((res) => {
+      const storeList = res.data.data;
+      commit('setState', {
+        storeList
+      });
+    });
+  },
+  getStoreListTag: async function ({ commit, state }, tag) {
+    const params = {
+      tag
+    };
+    await Http.get('/store/list/tag', {params}).then((res) => {
+      const storeList = res.data.data;
+      commit('setState', {
+        storeList
+      });
+    });
   },
 }
 
