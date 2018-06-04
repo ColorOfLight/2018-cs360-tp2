@@ -10,24 +10,23 @@
             | Favorites
       .container.content-container
         .row
-          .col-6
-            b-card.empty-card(no-body v-if="false")
-              b-card-body Please search with keywords or tags.
-            b-card.search-store-card(no-body)
+          .col-6(v-if="storeList && storeList.length > 0")
+            b-card.search-store-card(no-body v-for="store in storeList" :key="store.store_id")
               b-card-body
                 i.material-icons.icon-favorite.active star
                 .search-title-container
-                  .title 에꿍이치킨 (신정점)
+                  .title {{store.name}}
                   .tag-wrapper
-                    .tag #치킨
-                    .tag #양많음
-                    .tag #교내배달
+                    .tag(v-for="tag in store.tag_list.slice(0, 3)" :key="tag") {{"#" + tag}}
                 .search-rating-wrapper
-                  .rating-score 80%
-                  .rating-text Very positive
+                  .rating-score {{getRatingPoint(store.score)}}
+                  .rating-text {{getRatingText(store.score)}}
               b-card-footer
                 span.recent Recent
-                .text 교내배달 되긴한데 한마리 세트는 안해주시고 두마리세트 부터 해주시는 거 같아요... 좀 너무한 거 같긴 하네요...
+                .text {{getLastComment(store.review_list)}}
+          .col-6(v-else)
+            b-card.empty-card(no-body)
+              b-card-body Please search with keywords or tags.
           .col-6
             b-card.empty-card(no-body v-if="false")
               b-card-body Please select a store.
@@ -70,8 +69,24 @@ import Navbar from '@/components/Navbar'
 export default {
   async created () {
     if (Cookies.get('user_id')) {
-      await this.$store.dispatch('getUser', Cookies.get('user_id'));
+      let promiseList = [ this.$store.dispatch('getUser', Cookies.get('user_id')) ];
+
+      if (this.$route.query.keyword) {
+        promiseList.push(
+          this.$store.dispatch('getStoreListKeyword', this.$route.query.keyword)
+        );
+      } else if (this.$route.query.tag) {
+        promiseList.push(
+          this.$store.dispatch('getStoreListTag', this.$route.query.tag)
+        );
+      } else {
+        this.$store.commit('setState', {
+          storeList: null,
+        });
+      }
+      await Promise.all(promiseList);
       this.username = this.$store.state.username;
+      this.storeList = this.$store.state.storeList;
     } else {
       this.$router.push({name: 'Login'});
     }
@@ -82,6 +97,56 @@ export default {
   data () {
     return {
       username: "",
+      storeList: null,
+    }
+  },
+  methods: {
+    getLastComment(commentList) {
+      if (commentList && commentList.length > 0) {
+        return commentList[commentList.length - 1].content;
+      }
+      return '-';
+    },
+    getRatingPoint(score) {
+      if (score === null) return "-";
+      return Math.round(score) + " p";
+    },
+    getRatingText(score) {
+      if (score === null) return "-"
+      if (score <= 20) {
+        return "Very negative";
+      } else if (score > 20 && score <= 40) {
+        return "Negative";
+      } else if (score > 40 && score <= 60) {
+        return "Mixed";
+      } else if (score > 60 && score <= 80) {
+        return "Positive";
+      } else if (score > 80) {
+        return "Very Positive";
+      }
+    }
+  },
+  watch: {
+    '$route.query': {
+      handler: async function () {
+        let promiseList = [];
+        if (this.$route.query.keyword) {
+          promiseList.push(
+            this.$store.dispatch('getStoreListKeyword', this.$route.query.keyword)
+          );
+        } else if (this.$route.query.tag) {
+          promiseList.push(
+            this.$store.dispatch('getStoreListTag', this.$route.query.tag)
+          );
+        } else {
+          this.$store.commit('setState', {
+            storeList: null,
+          });
+        }
+        await Promise.all(promiseList);
+        this.storeList = this.$store.state.storeList;
+      },
+      deep: true,
     }
   },
 }
@@ -154,6 +219,12 @@ $store-detail-title-height: 4rem;
 }
 
 .search-store-card {
+  margin-bottom: 1.5rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   .card-body {
     padding: 1.25rem 9.5rem 1.25rem 3.5rem;
     position: relative;
@@ -175,6 +246,7 @@ $store-detail-title-height: 4rem;
     }
 
     .tag-wrapper {
+      height: 1.5rem;
       margin-top: .4rem;
 
       .tag {

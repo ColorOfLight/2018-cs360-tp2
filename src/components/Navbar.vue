@@ -21,6 +21,13 @@ export default {
   props: [
     'username'
   ],
+  created () {
+    if (this.$route.query.keyword) {
+      this.term = this.$route.query.keyword;
+    } else if (this.$route.query.tag) {
+      this.term = `#${this.$route.query.tag}`;
+    }
+  },
   data () {
     return {
       isDropdownOpen: false,
@@ -42,7 +49,7 @@ export default {
           this.$router.replace({name: 'Search', query: { keyword: this.term}});
         }
       }
-    }
+    },
   },
   watch: {
     'term': function () {
