@@ -11,13 +11,13 @@
       .container.content-container
         .row
           .col-6(v-if="storeList && storeList.length > 0")
-            b-card.search-store-card(no-body v-for="store in storeList" :key="store.store_id")
+            b-card.search-store-card(no-body v-for="store in storeList" :key="store.store_id" @click="showStoreDetail(store)")
               b-card-body
                 i.material-icons.icon-favorite.active star
                 .search-title-container
                   .title {{store.name}}
                   .tag-wrapper
-                    .tag(v-for="tag in store.tag_list.slice(0, 3)" :key="tag") {{"#" + tag}}
+                    .tag(v-for="tag in store.tag_list.slice(0, 3)" :key="tag" @click.stop="replaceTag(tag)") {{"#" + tag}}
                 .search-rating-wrapper
                   .rating-score {{getRatingPoint(store.score)}}
                   .rating-text {{getRatingText(store.score)}}
@@ -28,38 +28,33 @@
             b-card.empty-card(no-body)
               b-card-body Please search with keywords or tags.
           .col-6
-            b-card.empty-card(no-body v-if="false")
-              b-card-body Please select a store.
-            b-card.store-detail-card(no-body)
+            b-card.store-detail-card(no-body v-if="storeInDetail")
               b-card-body.detail-title-body
                 i.material-icons.icon-favorite.active star
-                .title 에꿍이치킨 (신성점)
+                .title {{storeInDetail.name}}
               b-card-body.detail-content-body
                 b-card(no-body)
                   b-card-body.ratings-body
                     .title Ratings
                     .ratings-content-wrapper
-                      .rating 80%
-                      .rating-text positive
-                      .rating-graph-wrapper
-                        .rating-graph
-                          .rating-graph-fill(style="width:80%;")
-                        .left-text 96
-                        .right-text 24
+                      .rating {{getRatingPoint(storeInDetail.score)}}
+                      .rating-text {{getRatingText(storeInDetail.score)}}
+                      //- .rating-graph-wrapper
+                      //-   .rating-graph
+                      //-     .rating-graph-fill(style="width:80%;")
+                      //-   .left-text 96
+                      //-   .right-text 24
                   b-card-body.tags-body
                     .title Tags
                     .tags-container
-                      .tag #치킨
-                      .tag #양많음
-                      .tag #교내배달
-                      .tag #건강
+                      .tag(v-for="tag in storeInDetail.tag_list" :key="tag" @click.stop="replaceTag(tag)") {{"#" + tag}}
                 b-card(no-body)
                   b-card-body.reviews-title-body
                     .title Reviews
-                  b-card-body.reviews-content-body
-                    .text 교내배달 되긴한데 한마리 세트는 안해주시고 두마리세트 부터 해주십니다
-                  b-card-body.reviews-content-body
-                    .text 교내배달 되긴한데 한마리 세트는 안해주시고 두마리세트 부터 해주십니다
+                  b-card-body.reviews-content-body(v-for="review in storeInDetail.review_list" :key="review.date")
+                    .text {{review.content}}
+            b-card.empty-card(no-body v-else)
+              b-card-body Please select a store.
 </template>
 
 <script>
@@ -98,6 +93,7 @@ export default {
     return {
       username: "",
       storeList: null,
+      storeInDetail: null,
     }
   },
   methods: {
@@ -124,6 +120,15 @@ export default {
       } else if (score > 80) {
         return "Very Positive";
       }
+    },
+    replaceTag(tag) {
+      this.$router.replace({
+        name: 'Search',
+        query: { tag },
+      });
+    },
+    showStoreDetail(sto) {
+      this.storeInDetail = sto;
     }
   },
   watch: {
@@ -154,6 +159,12 @@ export default {
 
 <style scoped lang="scss">
 $store-detail-title-height: 4rem;
+
+.tag {
+  &:hover {
+    cursor: pointer;
+  }
+}
 
 .icon-favorite {
   color: $gray-300;
@@ -288,6 +299,14 @@ $store-detail-title-height: 4rem;
     .text {
       @include text-truncate;
       padding-left: 4.25rem;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+
+    .card-body {
+      background-color: $primary-50;
     }
   }
 }
