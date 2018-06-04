@@ -4,7 +4,7 @@
     .search-content-container
       .side-menu-wrapper
         .account-name {{username}}
-        b-card.side-menu-card
+        b-card.side-menu-card(@click="$router.replace({name: 'Search', query: {favorites: true}})")
           .card-text
             i.material-icons.icon-favorite star
             | Favorites
@@ -84,8 +84,13 @@ export default {
       }
       await Promise.all(promiseList);
       this.username = this.$store.state.username;
+      // TODO: 서버 API 수정 후 작업하기!
+      // if (this.$route.query.favorites) {
+      //   this.$store.commit('setState', {
+      //     storeList: this.$store.state.favorites,
+      //   });
+      // }
       this.storeList = this.$store.state.storeList;
-      // this.favorites = this.$store.state.favorites;
     } else {
       this.$router.push({name: 'Login'});
     }
@@ -163,6 +168,13 @@ export default {
           promiseList.push(
             this.$store.dispatch('getStoreListTag', this.$route.query.tag)
           );
+        } else if (this.$route.query.favorites) {
+          // TODO: favorite
+          // this.$store.commit('setState', {
+          //   storeList: this.$store.state.favorites
+          // });
+          // this.storeList = this.$store.state.storeList;
+          this.storeInDetail = null;
         } else {
           this.$store.commit('setState', {
             storeList: null,
