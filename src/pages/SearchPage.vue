@@ -30,7 +30,7 @@
           .col-6
             b-card.store-detail-card(no-body v-if="storeInDetail")
               b-card-body.detail-title-body
-                i.material-icons.icon-favorite(:class="{active: isStoreFavorited(storeInDetail.store_id)}" @click.stop="toggleFavorite(store.store_id)") star
+                i.material-icons.icon-favorite(:class="{active: isStoreFavorited(storeInDetail.store_id)}" @click.stop="toggleFavorite(storeInDetail.store_id)") star
                 .title {{storeInDetail.name}}
               b-card-body.detail-content-body
                 b-card(no-body)
@@ -84,12 +84,11 @@ export default {
       }
       await Promise.all(promiseList);
       this.username = this.$store.state.username;
-      // TODO: 서버 API 수정 후 작업하기!
-      // if (this.$route.query.favorites) {
-      //   this.$store.commit('setState', {
-      //     storeList: this.$store.state.favorites,
-      //   });
-      // }
+      if (this.$route.query.favorites) {
+        this.$store.commit('setState', {
+          storeList: this.$store.state.favorites,
+        });
+      }
       this.storeList = this.$store.state.storeList;
     } else {
       this.$router.push({name: 'Login'});
@@ -109,7 +108,7 @@ export default {
   methods: {
     getLastComment(commentList) {
       if (commentList && commentList.length > 0) {
-        return commentList[commentList.length - 1].content;
+        return commentList[0].content;
       }
       return '-';
     },
@@ -169,11 +168,10 @@ export default {
             this.$store.dispatch('getStoreListTag', this.$route.query.tag)
           );
         } else if (this.$route.query.favorites) {
-          // TODO: favorite
-          // this.$store.commit('setState', {
-          //   storeList: this.$store.state.favorites
-          // });
-          // this.storeList = this.$store.state.storeList;
+          this.$store.commit('setState', {
+            storeList: this.$store.state.favorites
+          });
+          this.storeList = this.$store.state.storeList;
           this.storeInDetail = null;
         } else {
           this.$store.commit('setState', {
