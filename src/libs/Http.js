@@ -7,7 +7,7 @@ axios.defaults.headers.delete['Content-Type'] = 'application/x-www-form-urlencod
 const axiosInstance = axios.create({
   baseURL: "http://13.125.127.34:3000",
   headers: {
-    "Access-Control-Allow-Origin": "*"
+    // "Access-Control-Allow-Origin": "*"
   }
 });
 

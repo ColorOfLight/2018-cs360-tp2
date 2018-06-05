@@ -67,9 +67,9 @@ export default {
           password: this.form.password,
           name: this.form.username
         };
-        Http.post('/user', httpData).then(((res) => {
-          // TODO: return 값으로 user_id
-          console.log(res.data);
+        Http.post('/user', qs.stringify(httpData)).then(((res) => {
+          Cookies.set('user_id', res.data.data.user_id);
+          this.$router.push({name: 'Search'});
         }))
       } else {
         alert("Please fill all of inputs.")
